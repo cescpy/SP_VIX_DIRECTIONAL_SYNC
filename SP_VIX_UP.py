@@ -11,7 +11,7 @@ from matplotlib.widgets import MultiCursor
 import mplfinance as mpf
 
 
-start = '2020-06-01'
+start = '2010-06-01'
 end = datetime.today().strftime('%Y-%m-%d')
 
 df =  yf.download(['^GSPC', '^VIX'], start=start, end=end)['Close']
@@ -85,9 +85,10 @@ df['filt_PCT_VIX'] = df['PCT_VIX'].copy()
 df.loc[(df['Suben_0'].isnull()) & (df['Bajan_0'].isnull()), ['filt_PCT_SP500', 'filt_PCT_VIX']] = None
 
 
-
-
-
+dias_conjuntos = df['filt_PCT_SP500'].count()
+dias_totales = df['PCT_SP500'].count()
+porcentaje_conjuntos = round(100 * dias_conjuntos / dias_totales, 2)
+print(f'desde {start}\nSessiones S&P500 y VIX en la misma dirección: {porcentaje_conjuntos}%')
 
 # GRAFICO
 fig, axs = plt.subplots(5, 1, figsize=(12, 12), sharex=True,  gridspec_kw={'height_ratios': [2.5, 2, 2.5, 2, 2], 'hspace': 0.3})
