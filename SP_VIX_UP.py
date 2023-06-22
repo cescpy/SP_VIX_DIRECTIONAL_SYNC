@@ -11,7 +11,7 @@ from matplotlib.widgets import MultiCursor
 import mplfinance as mpf
 
 
-start = '2016-01-01'
+start = '2020-06-01'
 end = datetime.today().strftime('%Y-%m-%d')
 
 df =  yf.download(['^GSPC', '^VIX'], start=start, end=end)['Close']
@@ -80,44 +80,62 @@ df.loc[filter3, 'Bajan_3'] = 3
 df['Bajan_4'] = None
 df.loc[filter4, 'Bajan_4'] = 4
 
+df['filt_PCT_SP500'] = df['PCT_SP500'].copy()
+df['filt_PCT_VIX'] = df['PCT_VIX'].copy()
+df.loc[(df['Suben_0'].isnull()) & (df['Bajan_0'].isnull()), ['filt_PCT_SP500', 'filt_PCT_VIX']] = None
+
+
+
+
+
 
 # GRAFICO
-fig, axs = plt.subplots(4, 1, figsize=(12, 12), sharex=True,  gridspec_kw={'height_ratios': [3, 3, 2, 2], 'hspace': 0.3})
+fig, axs = plt.subplots(5, 1, figsize=(12, 12), sharex=True,  gridspec_kw={'height_ratios': [2.5, 2, 2.5, 2, 2], 'hspace': 0.3})
 
-axs[0].plot(df.index, df['SP500'], color ='purple')
+axs[0].plot(df.index, df['SP500'], color ='red')
 axs[0].set_ylabel('SP500')
 
-axs[1].plot(df.index, df['VIX'], color='blue')
-axs[1].set_ylabel('VIX')
+axs[1].bar(df.index, df['filt_PCT_VIX'], color='blue', alpha=1, width=1.4)
+axs[1].bar(df.index, df['filt_PCT_SP500'], color='red', alpha=0.8, width=1.1)
+axs[1].set_ylim(-10, 10)
+axs[1].set_ylabel('% diario\n días conjuntos')
 
-axs[2].scatter(df.index, df['Suben_0'], marker= '^', s= 15, color ='grey')
-axs[2].scatter(df.index, df['Suben_1'], marker= '^', s= 15, color ='green')
-axs[2].scatter(df.index, df['Suben_2'], marker= '^', s= 15, color ='yellow')
-axs[2].scatter(df.index, df['Suben_3'], marker= '^', s= 15, color ='orange')
-axs[2].scatter(df.index, df['Suben_4'], marker= '^', s= 15, color ='red')
-axs[2].set_title('Ambos suben')
+axs[2].plot(df.index, df['VIX'], color='blue')
+axs[2].set_ylabel('VIX')
 
-axs[2].set_yticks([0, 1, 2, 3, 4])
-axs[2].set_yticklabels([f'SP > {-spfiltro0}% & VIX > {-vixfiltro0}%', f'SP > {-spfiltro1}% & VIX > {-vixfiltro1}%',
+
+axs[3].scatter(df.index, df['Suben_0'], marker= '^', s= 15, color ='grey')
+axs[3].scatter(df.index, df['Suben_1'], marker= '^', s= 15, color ='green')
+axs[3].scatter(df.index, df['Suben_2'], marker= '^', s= 15, color ='yellow')
+axs[3].scatter(df.index, df['Suben_3'], marker= '^', s= 15, color ='orange')
+axs[3].scatter(df.index, df['Suben_4'], marker= '^', s= 15, color ='red')
+axs[3].set_title('Ambos suben')
+
+axs[3].set_yticks([0, 1, 2, 3, 4])
+axs[3].set_yticklabels([f'SP > {-spfiltro0}% & VIX > {-vixfiltro0}%', f'SP > {-spfiltro1}% & VIX > {-vixfiltro1}%',
                         f'SP > {-spfiltro2}% & VIX > {-vixfiltro2}%', f'SP > {-spfiltro3}% & VIX > {-vixfiltro3}%',
                         f'SP > {-spfiltro4}% & VIX > {-vixfiltro4}%'], fontsize= 8)
 
-axs[3].scatter(df.index, df['Bajan_0'], marker= 'v', s= 15, color ='grey')
-axs[3].scatter(df.index, df['Bajan_1'], marker= 'v', s= 15, color ='green')
-axs[3].scatter(df.index, df['Bajan_2'], marker= 'v', s= 15, color ='yellow')
-axs[3].scatter(df.index, df['Bajan_3'], marker= 'v', s= 15, color ='orange')
-axs[3].scatter(df.index, df['Bajan_4'], marker= 'v', s= 15, color ='red')
-axs[3].set_title('Ambos bajan')
 
-axs[3].set_yticks([0, 1, 2, 3, 4])
-axs[3].set_yticklabels([f'SP < {-spfiltro0}% & VIX < {-vixfiltro0}%', f'SP < {spfiltro1}% & VIX < {vixfiltro1}%',
+axs[4].scatter(df.index, df['Bajan_0'], marker= 'v', s= 15, color ='grey')
+axs[4].scatter(df.index, df['Bajan_1'], marker= 'v', s= 15, color ='green')
+axs[4].scatter(df.index, df['Bajan_2'], marker= 'v', s= 15, color ='yellow')
+axs[4].scatter(df.index, df['Bajan_3'], marker= 'v', s= 15, color ='orange')
+axs[4].scatter(df.index, df['Bajan_4'], marker= 'v', s= 15, color ='red')
+axs[4].set_title('Ambos bajan')
+
+axs[4].set_yticks([0, 1, 2, 3, 4])
+axs[4].set_yticklabels([f'SP < {-spfiltro0}% & VIX < {-vixfiltro0}%', f'SP < {spfiltro1}% & VIX < {vixfiltro1}%',
                         f'SP < {spfiltro2}% & VIX < {vixfiltro2}%', f'SP < {spfiltro3}% & VIX < {vixfiltro3}%',
                         f'SP < {spfiltro4}% & VIX < {vixfiltro4}%'], fontsize= 8)
 
 plt.xlabel('Date')
 plt.suptitle('DÍAS CON MOVIMIENTO S&P500 Y VIX EN EL MISMO SENTIDO')
 
-multi = MultiCursor(None, (axs[0], axs[1], axs[2], axs[3]), color='r', lw=1)
+multi = MultiCursor(None, (axs[0], axs[1], axs[2], axs[3], axs[4]), color='r', lw=1)
+
+plt.subplots_adjust(top=0.95, bottom=0.05)
+plt.subplots_adjust(hspace=0.01)
 plt.show()
 
 
