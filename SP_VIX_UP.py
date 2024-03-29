@@ -11,7 +11,7 @@ from matplotlib.widgets import MultiCursor
 import mplfinance as mpf
 
 
-start = '2010-06-01'
+start = '2020-06-01'
 end = datetime.today().strftime('%Y-%m-%d')
 
 df =  yf.download(['^GSPC', '^VIX'], start=start, end=end)['Close']
